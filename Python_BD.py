@@ -51,10 +51,7 @@ with conn.cursor() as cur:
 
     cur.execute("""DELETE FROM Phone_number WHERE Name_id = 1;""")
 
-    cur.execute("""
-            SELECT * FROM Name
-            LEFT JOIN Phone_number ON Name.id = Phone_number.Name_id;
-    """)
+    cur.execute("SELECT * FROM Name LEFT JOIN Phone_number ON Name.id = Phone_number.Name_id;")
 
     r = cur.fetchall()
     for q in r:
