@@ -25,8 +25,11 @@ def add_client(conn, first_name, last_name, email, phone_number=None):
         cur.execute("INSERT INTO Client(first_name, last_name, email)"
                     " VALUES(%s, %s, %s) RETURNING id;", (first_name, last_name, email))
         client_id = cur.fetchone()[0]
-        add_phone(conn, client_id, phone_number)
-        conn.commit()
+        if phone_number is None:
+            pass
+        else:
+            add_phone(conn, client_id, phone_number)
+            conn.commit()
 
 # Функция, позволяющая добавить телефон для существующего клиента!+
 def add_phone(conn, client_id, phone_number):
@@ -59,11 +62,35 @@ def delete_client(conn, client_id):
         conn.commit()
 
 # Функция, позволяющая найти клиента по его данным (имени, фамилии, email-у или телефону)
-def find_client(conn, first_name=None, last_name=None, email=None, phone_number=None):
+def find_client(conn, search_data):
     with conn.cursor() as cur:
-        cur.execute("SELECT * FROM Client "
-                    "JOIN Phone_number ON Phone_number.Client_id=Client.id;")
-        print(cur.fetchall())
+        cur.execute("SELECT Client.id, first_name, last_name, email, phone_number FROM Client "
+                    "LEFT JOIN Phone_number ON Phone_number.Client_id=Client.id "
+                    "WHERE first_name=%s;", (search_data, ))
+        result = cur.fetchall()
+        if len(result) > 0:
+            print(result)
+
+        cur.execute("SELECT Client.id, first_name, last_name, email, phone_number FROM Client "
+                    "LEFT JOIN Phone_number ON Phone_number.Client_id=Client.id "
+                    "WHERE last_name=%s;", (search_data,))
+        result = cur.fetchall()
+        if len(result) > 0:
+            print(result)
+
+        cur.execute("SELECT Client.id, first_name, last_name, email, phone_number FROM Client "
+                    "LEFT JOIN Phone_number ON Phone_number.Client_id=Client.id "
+                    "WHERE email=%s;", (search_data,))
+        result = cur.fetchall()
+        if len(result) > 0:
+            print(result)
+
+        cur.execute("SELECT Client.id, first_name, last_name, email, phone_number FROM Client "
+                    "LEFT JOIN Phone_number ON Phone_number.Client_id=Client.id "
+                    "WHERE phone_number=%s;", (search_data,))
+        result = cur.fetchall()
+        if len(result) > 0:
+            print(result)
 
 with psycopg2.connect(database='client', user='postgres', password=77851100) as conn:
     pass
@@ -71,14 +98,15 @@ with psycopg2.connect(database='client', user='postgres', password=77851100) as 
     # add_client(conn, 'ivan', 'poludurok', 'povelitel_kisok2005@mail.ru', '9204930010')
     # add_client(conn, 'lena', 'golovaсh', 'golovachlena@yandex.ru')
     # add_phone(conn, 2, '9156696610')
+    # change_client(conn, 1, 'edward', 'zadripysh', 'edward_zad@gmail.com', '9204930013')
     # delete_phone(conn, 2, '9156696610')
     # delete_client(conn, 2)
-    # find_client(conn, 'poludurok')
-    # change_client(conn, 1, 'edward', 'zadripysh', 'edward_zad@gmail.com', '9204930013')
-    with conn.cursor() as cur:
-        cur.execute("SELECT Client.id, first_name, last_name, email, phone_number FROM Client "
-                    "JOIN Phone_number ON Phone_number.Client_id=Client.id;")
-        r = cur.fetchall()
-        for q in r:
-            print(q)
+    find_client(conn, 'golovachlena@yandex.ru')
+
+    # with conn.cursor() as cur:
+    #     cur.execute("SELECT Client.id, first_name, last_name, email, phone_number FROM Client "
+    #                 "LEFT JOIN Phone_number ON Phone_number.Client_id=Client.id;")
+    #     r = cur.fetchall()
+    #     for q in r:
+    #         print(q)
 conn.close()
