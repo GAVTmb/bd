@@ -1,3 +1,7 @@
+import os
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
+
 import psycopg2
 
 # Функция, создающая структуру БД (таблицы)!
@@ -92,16 +96,17 @@ def find_client(conn, search_data):
         if len(result) > 0:
             print(result)
 
-with psycopg2.connect(database='client', user='postgres', password=77851100) as conn:
+with psycopg2.connect(database='client', user='postgres', password=os.getenv('PASS')) as conn:
     pass
     # create_db(conn)
     # add_client(conn, 'ivan', 'poludurok', 'povelitel_kisok2005@mail.ru', '9204930010')
     # add_client(conn, 'lena', 'golovaсh', 'golovachlena@yandex.ru')
+    # add_client(conn, 'ivan', 'ivanov', 'ivan_ivanov@mail.ru', '9674956012')
     # add_phone(conn, 2, '9156696610')
     # change_client(conn, 1, 'edward', 'zadripysh', 'edward_zad@gmail.com', '9204930013')
     # delete_phone(conn, 2, '9156696610')
     # delete_client(conn, 2)
-    find_client(conn, 'golovachlena@yandex.ru')
+    find_client(conn, 'ivan')
 
     # with conn.cursor() as cur:
     #     cur.execute("SELECT Client.id, first_name, last_name, email, phone_number FROM Client "
