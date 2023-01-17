@@ -36,6 +36,7 @@ JOIN executor e  ON ea.executor_id = e.id
 WHERE e.name_executor LIKE 'Noize MC';
 
 --6. название альбомов, в которых присутствуют исполнители более 1 жанра; 
+
 SELECT name_album FROM album a
 JOIN executor_album ea  ON a.id = ea.album_id
 JOIN executor e  ON ea.executor_id = e.id
