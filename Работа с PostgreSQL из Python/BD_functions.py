@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
-
+from pprint import pprint
 import psycopg2
 
 # Функция, создающая структуру БД (таблицы)!
@@ -99,15 +99,14 @@ with psycopg2.connect(database='client', user='postgres', password=os.getenv('PA
         # add_client(cur, 'lena', 'golovaсh', 'golovachlena@yandex.ru')
         # add_client(cur, 'ivan', 'ivanov', 'ivan_ivanov@mail.ru', '9674956012')
         # add_phone(cur, 2, '9156696610')
-        # change_client(cur, 1, 'first_name', 'vasgen')
+        # change_client(cur, 2, 'phone_number', '9204930013')
         # delete_phone(cur, 2, '9156696610')
         # delete_client(cur, 2)}
-        find_client(cur, 'ivan')
+        # find_client(cur, 'ivan')
 
 
-        # cur.execute("SELECT Client.id, first_name, last_name, email, phone_number FROM Client "
-        #             "LEFT JOIN Phone_number ON Phone_number.Client_id=Client.id;")
-        # r = cur.fetchall()
-        # for q in r:
-        #     print(q)
+        cur.execute("SELECT Client.id, first_name, last_name, email, phone_number FROM Client "
+                    "LEFT JOIN Phone_number ON Phone_number.Client_id=Client.id;")
+        pprint(cur.fetchall())
+
 conn.close()
