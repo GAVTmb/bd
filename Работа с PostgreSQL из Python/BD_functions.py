@@ -91,22 +91,22 @@ def find_client(cur, search_data):
     if len(result) > 0:
         print(result)
 
+if __name__ == "__main__":
+    with psycopg2.connect(database='client', user='postgres', password=os.getenv('PASS')) as conn:
+        with conn.cursor() as cur:
+            # create_db(cur)
+            # add_client(cur, 'ivan', 'poludurok', 'povelitel_kisok2005@mail.ru', '9204930010')
+            # add_client(cur, 'lena', 'golovaсh', 'golovachlena@yandex.ru')
+            # add_client(cur, 'ivan', 'ivanov', 'ivan_ivanov@mail.ru', '9674956012')
+            # add_phone(cur, 2, '9156696610')
+            # change_client(cur, 2, 'phone_number', '9204930013')
+            # delete_phone(cur, 2, '9156696610')
+            # delete_client(cur, 2)}
+            # find_client(cur, 'ivan')
 
-with psycopg2.connect(database='client', user='postgres', password=os.getenv('PASS')) as conn:
-    with conn.cursor() as cur:
-        # create_db(cur)
-        # add_client(cur, 'ivan', 'poludurok', 'povelitel_kisok2005@mail.ru', '9204930010')
-        # add_client(cur, 'lena', 'golovaсh', 'golovachlena@yandex.ru')
-        # add_client(cur, 'ivan', 'ivanov', 'ivan_ivanov@mail.ru', '9674956012')
-        # add_phone(cur, 2, '9156696610')
-        # change_client(cur, 2, 'phone_number', '9204930013')
-        # delete_phone(cur, 2, '9156696610')
-        # delete_client(cur, 2)}
-        # find_client(cur, 'ivan')
 
+            cur.execute("SELECT Client.id, first_name, last_name, email, phone_number FROM Client "
+                        "LEFT JOIN Phone_number ON Phone_number.Client_id=Client.id;")
+            pprint(cur.fetchall())
 
-        cur.execute("SELECT Client.id, first_name, last_name, email, phone_number FROM Client "
-                    "LEFT JOIN Phone_number ON Phone_number.Client_id=Client.id;")
-        pprint(cur.fetchall())
-
-conn.close()
+    conn.close()
