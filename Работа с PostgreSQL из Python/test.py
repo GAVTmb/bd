@@ -1,5 +1,8 @@
 import psycopg2
 from pprint import pprint
+import os
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
 
 def create_db(cur):
     cur.execute("DROP TABLE Phone_number; "
@@ -111,7 +114,7 @@ def all_clients ():
     pprint(cur.fetchall())
 
 
-with psycopg2.connect(database='client', user='postgres', password=77851100) as conn:
+with psycopg2.connect(database='client', user='postgres', password=os.getenv('PASS')) as conn:
     with conn.cursor() as cur:
         while True:
             enter_the_command = input('Введите команду: ').lower()
@@ -123,13 +126,15 @@ with psycopg2.connect(database='client', user='postgres', password=77851100) as 
                 email = input('Введите электронную почту: ').lower()
                 phone_number = input('Введите номер телефона: +7 ')
                 if len(phone_number) == 0:
-                    client_id = add_client(cur, first_name, last_name, email)
+                    add_client(cur, first_name, last_name, email)
                 else:
                     client_id = add_client(cur, first_name, last_name, email)
                     add_phone(cur, client_id, phone_number)
-
             elif enter_the_command == '3':
                 search_data = input('Введите данные клиента которому добавляем телефон: ').lower()
+                phone_number = input('Введите номер телефона: +7').lower()
+                result = find_client(cur, search_data)
+                client_id = result[0][0]
                 add_phone(cur, client_id, phone_number)
             elif enter_the_command == '4':
                 change_client(cur, client_id, first_name=None, last_name=None, email=None, phone_number=None)
@@ -147,15 +152,5 @@ with psycopg2.connect(database='client', user='postgres', password=77851100) as 
                 break
             else:
                 print('Вы ввели не верную команду, попробуйте снова!')
-        cur.execute("SELECT Client.id, first_name, last_name, email, phone_number FROM Client "
-                    "LEFT JOIN Phone_number ON Phone_number.Client_id=Client.id;")
-        r = cur.fetchall()
-        for q in r:
-            print(q)
 
 conn.close()
-# with conn.cursor() as cur:
-#     cur.execute("""SELECT * FROM Client;""")
-#     print(cur.fetchall())
-#     cur.execute("""SELECT * FROM Phone_number;""")
-#     print(cur.fetchall())
