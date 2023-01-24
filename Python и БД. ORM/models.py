@@ -9,22 +9,25 @@ class Publisher(Base):
     id = sq.Column(sq.Integer, primary_key=True)
     name = sq.Column(sq.String, unique=True)
     def __str__(self):
-        return f'{self.id}: {self.name}'
+        return f'{self.id}, {self.name}'
 
 
 class Book(Base):
-    __tablename__ =  'books'
+    __tablename__ = 'books'
     id = sq.Column(sq.Integer, primary_key=True)
     title = sq.Column(sq.String)
     id_publisher = sq.Column(sq.Integer, sq.ForeignKey("publishers.id"), nullable=False)
-    publisher = relationship("Publisher", backref="books")
+
+    publisher = relationship(Publisher, backref="book")
+    def __str__(self):
+        return f'id: {self.id}, title: {self.title}, id_publisher: {self.id_publisher}'
 
 
 class Shop(Base):
     __tablename__ =  'shops'
     id = sq.Column(sq.Integer, primary_key=True)
     name = sq.Column(sq.String, unique=True)
-    def __repr__(self):
+    def __str__(self):
         return f"Shop(id={self.id}, name={self.name})"
 
 
@@ -34,19 +37,27 @@ class Stock(Base):
     id_book = sq.Column(sq.Integer, sq.ForeignKey("books.id"), nullable=False)
     id_shop = sq.Column(sq.Integer, sq.ForeignKey("shops.id"), nullable=False)
     count = sq.Column(sq.Integer, nullable=False)
+
     book = relationship("Book", backref="stocks")
     shop = relationship("Shop", backref="stocks")
-    sales = relationship("Sale", backref="stock")
+
+    def __str__(self):
+        return f'{self.id}, {self.id_book}, {self.id_shop}, {self.count}'
 
 
 class Sale(Base):
     __tablename__ = 'sales'
     id = sq.Column(sq.Integer, primary_key=True)
     price = sq.Column(sq.Float, nullable=False)
-    date_sale = sq.Column(sq.Date)
+    date_sale = sq.Column(sq.Date, nullable=False)
     id_stock = sq.Column(sq.Integer, sq.ForeignKey("stocks.id"), nullable=False)
     count = sq.Column(sq.Integer, nullable=False)
 
+    stock = relationship("Stock", backref="sales")
+    def __str__(self):
+        return f'{self.id}, {self.price}, {self.date_sale}, {self.id_stock}, {self.count}'
+
 
 def create_tables(engine):
+    Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
