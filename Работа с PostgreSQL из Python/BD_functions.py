@@ -101,7 +101,7 @@ if __name__ == "__main__":
             # add_phone(cur, 2, '9156696610')
             # change_client(cur, 2, 'phone_number', '9204930013')
             # delete_phone(cur, 2, '9156696610')
-            # delete_client(cur, 2)}
+            # delete_client(cur, 2)
             # find_client(cur, 'ivan')
 
 
